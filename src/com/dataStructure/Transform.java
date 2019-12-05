@@ -5,10 +5,12 @@ import com.util.Vector2;
 public class Transform {
     public Vector2 position;
     public Vector2 scale;
-    public Vector2 rotation;
+    public float rotation;
 
     public Transform(Vector2 position) {
         this.position = position;
+        this.scale = new Vector2(1.0f, 1.0f);
+        this.rotation = 0.0f;
     }
 
     @Override

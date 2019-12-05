@@ -68,7 +68,7 @@ public class Window extends JFrame implements Runnable {
         }
 
         renderOffscreen(doubleBufferGraphics);
-        
+
         g.drawImage(doubleBufferImage, 0, 0, getWidth(), getHeight(), null);
     }
 
