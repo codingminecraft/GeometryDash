@@ -34,19 +34,22 @@ public class LevelEditorScene extends Scene {
                 Color.RED,
                 Color.GREEN);
         player.addComponent(playerComp);
+
+        renderer.submit(player);
     }
 
     @Override
     public void update(double dt) {
         player.update(dt);
         player.transform.rotation += dt * 1f;
+        camera.position.x += dt * 60f;
     }
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.setColor(new Color(0.13f, 0.1f, 0.8f));
+        g2.setColor(new Color(1.0f, 1.0f, 1.0f));
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
-        player.draw(g2);
+        renderer.render(g2);
     }
 }
