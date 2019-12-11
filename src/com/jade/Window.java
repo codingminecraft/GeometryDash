@@ -5,11 +5,13 @@ import com.util.Time;
 
 import javax.swing.JFrame;
 import java.awt.*;
+import java.util.logging.Level;
 
 public class Window extends JFrame implements Runnable {
 
     public ML mouseListener;
     public KL keyListener;
+    public boolean isInEditor = true;
 
     private static Window window = null;
     private boolean isRunning = true;
@@ -36,10 +38,21 @@ public class Window extends JFrame implements Runnable {
         changeScene(0);
     }
 
+    public Scene getCurrentScene() {
+        return currentScene;
+    }
+
     public void changeScene(int scene) {
         switch (scene) {
             case 0:
+                isInEditor = true;
                 currentScene = new LevelEditorScene("Level Editor");
+                currentScene.init();
+                break;
+            case 1:
+                isInEditor = false;
+                currentScene = new LevelScene("Level");
+                currentScene.init();
                 break;
             default:
                 System.out.println("Do not know what this scene is.");
@@ -70,6 +83,7 @@ public class Window extends JFrame implements Runnable {
         renderOffscreen(doubleBufferGraphics);
 
         g.drawImage(doubleBufferImage, 0, 0, getWidth(), getHeight(), null);
+        //g.drawImage(doubleBufferImage, (int)(-getWidth() / 2.0f), (int)(-getHeight() / 2.0f), (int)(getWidth() * 2.0), (int)(getHeight() * 2.0), null);
     }
 
     public void renderOffscreen(Graphics g) {

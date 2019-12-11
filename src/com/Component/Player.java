@@ -41,13 +41,16 @@ public class Player extends Component {
         }
     }
 
+
+
     @Override
     public void draw(Graphics2D g2) {
         AffineTransform transform = new AffineTransform();
         transform.setToIdentity();
         transform.translate(gameObject.transform.position.x, gameObject.transform.position.y);
         transform.rotate(gameObject.transform.rotation,
-                width / 2.0, height / 2.0);
+                width * gameObject.transform.scale.x / 2.0,
+                height * gameObject.transform.scale.y / 2.0);
         transform.scale(gameObject.transform.scale.x, gameObject.transform.scale.y);
         g2.drawImage(layerOne.image, transform, null);
         g2.drawImage(layerTwo.image, transform, null);
