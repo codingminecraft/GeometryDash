@@ -28,4 +28,9 @@ public class CameraControls extends Component {
         prevMx = Window.getWindow().mouseListener.x + Window.getWindow().mouseListener.dx;
         prevMy = Window.getWindow().mouseListener.y + Window.getWindow().mouseListener.dy;
     }
+
+    @Override
+    public Component copy() {
+        return null;
+    }
 }

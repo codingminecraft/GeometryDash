@@ -12,4 +12,8 @@ public class Vector2 {
         this.x = 0;
         this.y = 0;
     }
+
+    public Vector2 copy() {
+        return new Vector2(this.x, this.y);
+    }
 }

@@ -14,4 +14,9 @@ public class BoxBounds extends Component {
     public void update(double dt){
 
     }
+
+    @Override
+    public Component copy() {
+        return new BoxBounds(width, height);
+    }
 }
