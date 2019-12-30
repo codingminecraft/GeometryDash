@@ -14,5 +14,9 @@ public abstract class Component<T> {
         return;
     }
 
+    public void start() {
+        return;
+    }
+
     public abstract Component copy();
 }

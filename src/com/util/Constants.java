@@ -18,4 +18,11 @@ public class Constants {
 
     public static final int TILE_WIDTH = 42;
     public static final int TILE_HEIGHT = 42;
+
+    public static final int BUTTON_OFFSET_X = 400;
+    public static final int BUTTON_OFFSET_Y = 560;
+    public static final int BUTTON_SPACING_HZ = 10;
+    public static final int BUTTON_SPACING_VT = 5;
+    public static final int BUTTON_WIDTH = 60;
+    public static final int BUTTON_HEIGHT = 60;
 }

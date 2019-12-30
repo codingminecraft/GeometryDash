@@ -2,7 +2,6 @@ package com.Component;
 
 import com.dataStructure.AssetPool;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,8 @@ public class Spritesheet {
                 int imgX = (column * tileWidth) + (column * spacing);
                 int imgY = (row * tileHeight) + (row * spacing);
 
-                sprites.add(new Sprite(parent.image.getSubimage(imgX, imgY, tileWidth, tileHeight)));
+                sprites.add(new Sprite(parent.image.getSubimage(imgX, imgY, tileWidth, tileHeight),
+                        row, column, count));
                 count++;
                 if (count > size - 1) {
                     break;

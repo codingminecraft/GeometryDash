@@ -3,6 +3,7 @@ package com.Component;
 import com.jade.Component;
 import com.jade.GameObject;
 import com.jade.Window;
+import com.util.Constants;
 import com.util.Vector2;
 
 import java.awt.AlphaComposite;
@@ -30,9 +31,10 @@ public class SnapToGrid extends Component {
             this.gameObject.transform.position.x = x * gridWidth - Window.getWindow().getCurrentScene().camera.position.x;
             this.gameObject.transform.position.y = y * gridWidth - Window.getWindow().getCurrentScene().camera.position.y;
 
-            if (Window.getWindow().mouseListener.mousePressed &&
-                    Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1 &&
-                    debounceLeft < 0) {
+            if (Window.getWindow().mouseListener.y < Constants.BUTTON_OFFSET_Y &&
+                Window.getWindow().mouseListener.mousePressed &&
+                Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1 &&
+                debounceLeft < 0) {
                 debounceLeft = debounceTime;
                 GameObject object = gameObject.copy();
                 object.transform.position = new Vector2(x * gridWidth, y * gridHeight);
