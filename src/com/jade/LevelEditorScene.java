@@ -1,7 +1,9 @@
 package com.jade;
 
 import com.Component.*;
+import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.main.Main;
 import com.ui.MainContainer;
 import com.util.Constants;
 import com.util.Vector2;
@@ -21,7 +23,7 @@ public class LevelEditorScene extends Scene {
     private Grid grid;
     private CameraControls cameraControls;
     public GameObject mouseCursor;
-    private MainContainer editingButtons = new MainContainer();
+    private MainContainer editingButtons;
 
     public LevelEditorScene(String name) {
         super.Scene(name);
@@ -29,20 +31,20 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        initAssetPool();
+
         grid = new Grid();
         cameraControls = new CameraControls();
+        editingButtons = new MainContainer();
         editingButtons.start();
 
         mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2()));
         mouseCursor.addComponent(new SnapToGrid(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
 
         player = new GameObject("Some game object", new Transform(new Vector2(500, 350.0f)));
-        Spritesheet layerOne = new Spritesheet("assets/player/layerOne.png",
-                42, 42, 2, 13, 13 * 5);
-        Spritesheet layerTwo = new Spritesheet("assets/player/layerTwo.png",
-                42, 42, 2, 13, 13 * 5);
-        Spritesheet layerThree = new Spritesheet("assets/player/layerThree.png",
-                42, 42, 2, 13, 13 * 5);
+        Spritesheet layerOne = AssetPool.getSpritesheet("assets/player/layerOne.png");
+        Spritesheet layerTwo = AssetPool.getSpritesheet("assets/player/layerTwo.png");
+        Spritesheet layerThree = AssetPool.getSpritesheet("assets/player/layerThree.png");
         Player playerComp = new Player(
                 layerOne.sprites.get(0),
                 layerTwo.sprites.get(0),
@@ -59,6 +61,19 @@ public class LevelEditorScene extends Scene {
         ground.setNonSerializable();
         addGameObject(player);
         addGameObject(ground);
+    }
+
+    public void initAssetPool() {
+        AssetPool.addSpritesheet("assets/player/layerOne.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/player/layerTwo.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/player/layerThree.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/groundSprites.png",
+                42, 42, 2, 6, 12);
+        AssetPool.addSpritesheet("assets/buttonSprites.png",
+                60, 60, 2, 2, 2);
     }
 
     @Override

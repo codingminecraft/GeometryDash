@@ -117,7 +117,9 @@ public class GameObject extends Serialize {
         if (components.size() > 0) {
             builder.append(closeObjectProperty(tabSize + 1));
         }
+
         builder.append(addEnding(true, false));
+        builder.append(closeObjectProperty(tabSize));
 
         return builder.toString();
     }

@@ -1,6 +1,7 @@
 package com.dataStructure;
 
 import com.Component.Sprite;
+import com.Component.Spritesheet;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,15 +9,20 @@ import java.util.Map;
 
 public class AssetPool {
     static Map<String, Sprite> sprites = new HashMap<>();
+    static Map<String, Spritesheet> spritesheets = new HashMap<>();
 
     public static boolean hasSprite(String pictureFile) {
         return AssetPool.sprites.containsKey(pictureFile);
     }
 
+    public static boolean hasSpritesheet(String pictureFile) {
+        return AssetPool.spritesheets.containsKey(pictureFile);
+    }
+
     public static Sprite getSprite(String pictureFile) {
         File file = new File(pictureFile);
-        if (AssetPool.hasSprite(pictureFile)) {
-            return AssetPool.sprites.get(file.getAbsolutePath().toString());
+        if (AssetPool.hasSprite(file.getAbsolutePath())) {
+            return AssetPool.sprites.get(file.getAbsolutePath());
         } else {
             Sprite sprite = new Sprite(pictureFile);
             AssetPool.addSprite(pictureFile, sprite);
@@ -24,19 +30,33 @@ public class AssetPool {
         }
     }
 
-    /**
-     *
-     * @param pictureFile The absolute path to the picture
-     * @param sprite
-     */
-    public static void addSprite(String pictureFile, Sprite sprite) {
+    public static Spritesheet getSpritesheet(String pictureFile) {
         File file = new File(pictureFile);
-        if (!AssetPool.hasSprite(file.getAbsolutePath())) {
-            AssetPool.sprites.put(file.getAbsolutePath(), sprite);
+        if (AssetPool.hasSpritesheet(file.getAbsolutePath())) {
+            return AssetPool.spritesheets.get(file.getAbsolutePath());
         } else {
-            System.out.println("Asset pool already has asset: " + file.getAbsolutePath());
+            System.out.println("Spritesheet '" + pictureFile + "' has not been added to asset pool.");
             System.exit(-1);
         }
+        return null;
+    }
+
+    public static void addSpritesheet(String pictureFile, int tileWidth, int tileHeight, int spacing, int columns, int size) {
+        File file = new File(pictureFile);
+        if (!AssetPool.hasSpritesheet(file.getAbsolutePath())) {
+            Spritesheet spritesheet = new Spritesheet(pictureFile, tileWidth, tileHeight, spacing, columns, size);
+            AssetPool.spritesheets.put(file.getAbsolutePath(), spritesheet);
+        }
+    }
+
+    private static void addSprite(String pictureFile, Sprite sprite) {
+        File file = new File(pictureFile);
+        AssetPool.sprites.put(file.getAbsolutePath(), sprite);
+    }
+
+    private static void addSpritesheet(String pictureFile, Spritesheet spritesheet) {
+        File file = new File(pictureFile);
+        spritesheets.put(file.getAbsolutePath(), spritesheet);
     }
 
 }

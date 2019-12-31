@@ -36,13 +36,14 @@ public class Sprite extends Component {
         }
     }
 
-    public Sprite(BufferedImage image) {
+    public Sprite(BufferedImage image, String pictureFile) {
         this.image = image;
         this.width = image.getWidth();
         this.height = image.getHeight();
+        this.pictureFile = pictureFile;
     }
 
-    public Sprite(BufferedImage image, int row, int column, int index) {
+    public Sprite(BufferedImage image, int row, int column, int index, String pictureFile) {
         this.image = image;
         this.width = image.getWidth();
         this.height = image.getHeight();
@@ -50,6 +51,7 @@ public class Sprite extends Component {
         this.column = column;
         this.index = index;
         this.isSubsprite = true;
+        this.pictureFile = pictureFile;
     }
 
     @Override
@@ -61,18 +63,20 @@ public class Sprite extends Component {
     @Override
     public Component copy() {
         if (!isSubsprite)
-            return new Sprite(this.image);
+            return new Sprite(this.image, this.pictureFile);
         else
-            return new Sprite(this.image, this.row, this.column, this.index);
+            return new Sprite(this.image, this.row, this.column, this.index, this.pictureFile);
     }
 
     @Override
     public String serialize(int tabSize) {
-        if (isSubsprite) {
-            StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-            builder.append(beginObjectProperty("Sprite", tabSize));
-            builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, true));
+        builder.append(beginObjectProperty("Sprite", tabSize));
+        builder.append(addBooleanProperty("isSubsprite", isSubsprite, tabSize + 1, true, true));
+        builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, true));
+
+        if (isSubsprite) {
             builder.append(addIntProperty("row", row, tabSize + 1, true, true));
             builder.append(addIntProperty("column", column, tabSize + 1, true, true));
             builder.append(addIntProperty("index", index, tabSize + 1, true, false));
@@ -81,6 +85,7 @@ public class Sprite extends Component {
             return builder.toString();
         }
 
-        return "";
+        builder.append(closeObjectProperty(tabSize));
+        return builder.toString();
     }
 }
