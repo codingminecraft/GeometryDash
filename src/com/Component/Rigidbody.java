@@ -28,4 +28,9 @@ public class Rigidbody extends Component {
     public Component copy() {
         return null;
     }
+
+    @Override
+    public String serialize(int tabSize) {
+        return "";
+    }
 }

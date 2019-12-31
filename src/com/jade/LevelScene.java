@@ -1,11 +1,13 @@
 package com.jade;
 
 import com.Component.*;
+import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.util.Constants;
 import com.util.Vector2;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class LevelScene extends Scene {
     static LevelScene currentScene;
@@ -18,14 +20,12 @@ public class LevelScene extends Scene {
 
     @Override
     public void init() {
+        initAssetPool();
 
         player = new GameObject("Some game object", new Transform(new Vector2(500, 350.0f)));
-        Spritesheet layerOne = new Spritesheet("assets/player/layerOne.png",
-                42, 42, 2, 13, 13 * 5);
-        Spritesheet layerTwo = new Spritesheet("assets/player/layerTwo.png",
-                42, 42, 2, 13, 13 * 5);
-        Spritesheet layerThree = new Spritesheet("assets/player/layerThree.png",
-                42, 42, 2, 13, 13 * 5);
+        Spritesheet layerOne = AssetPool.getSpritesheet("assets/player/layerOne.png");
+        Spritesheet layerTwo = AssetPool.getSpritesheet("assets/player/layerTwo.png");
+        Spritesheet layerThree = AssetPool.getSpritesheet("assets/player/layerThree.png");
         Player playerComp = new Player(
                 layerOne.sprites.get(0),
                 layerTwo.sprites.get(0),
@@ -43,6 +43,17 @@ public class LevelScene extends Scene {
 
         addGameObject(player);
         addGameObject(ground);
+    }
+
+    public void initAssetPool() {
+        AssetPool.addSpritesheet("assets/player/layerOne.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/player/layerTwo.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/player/layerThree.png",
+                42, 42, 2, 13, 13 * 5);
+        AssetPool.addSpritesheet("assets/groundSprites.png",
+                42, 42, 2, 6, 12);
     }
 
     @Override

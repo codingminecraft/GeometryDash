@@ -1,8 +1,10 @@
 package com.jade;
 
+import com.file.Serialize;
+
 import java.awt.Graphics2D;
 
-public abstract class Component<T> {
+public abstract class Component<T> extends Serialize {
 
     public GameObject gameObject;
 

@@ -2,6 +2,7 @@ package com.ui;
 
 import com.Component.Sprite;
 import com.Component.Spritesheet;
+import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.Component;
 import com.jade.GameObject;
@@ -21,8 +22,8 @@ public class MainContainer extends Component {
     }
 
     public void init() {
-        Spritesheet groundSprites = new Spritesheet("assets/groundSprites.png", 42, 42, 2, 6, 12);
-        Spritesheet buttonSprites = new Spritesheet("assets/buttonSprites.png", 60, 60, 2, 2, 2);
+        Spritesheet groundSprites = AssetPool.getSpritesheet("assets/groundSprites.png");
+        Spritesheet buttonSprites = AssetPool.getSpritesheet("assets/buttonSprites.png");
 
         for (int i=0; i < groundSprites.sprites.size(); i++) {
             Sprite currentSprite = groundSprites.sprites.get(i);
@@ -66,5 +67,10 @@ public class MainContainer extends Component {
         for (GameObject g : this.menuItems) {
             g.draw(g2);
         }
+    }
+
+    @Override
+    public String serialize(int tabSize) {
+        return "";
     }
 }
