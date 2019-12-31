@@ -11,8 +11,9 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 public class MenuItem extends Component {
-    int x, y, width, height;
-    Sprite buttonSprite, hoverSprite, myImage;
+    private int x, y, width, height, bufferX, bufferY;
+    private Sprite buttonSprite, hoverSprite, myImage;
+
     public boolean isSelected;
 
     public MenuItem(int x, int y, int width, int height, Sprite buttonSprite, Sprite hoverSprite) {
@@ -28,6 +29,9 @@ public class MenuItem extends Component {
     @Override
     public void start() {
         myImage = gameObject.getComponent(Sprite.class);
+
+        this.bufferX = (int)((this.width / 2.0) - (myImage.width / 2.0));
+        this.bufferY = (int)((this.height / 2.0) - (myImage.height / 2.0));
     }
 
     @Override
@@ -58,9 +62,13 @@ public class MenuItem extends Component {
     @Override
     public void draw(Graphics2D g2) {
         g2.drawImage(this.buttonSprite.image, this.x, this.y, this.width, this.height, null);
-        g2.drawImage(myImage.image, this.x, this.y, myImage.width, myImage.height, null);
+        g2.drawImage(myImage.image, this.x + bufferX, this.y + bufferY, myImage.width, myImage.height, null);
         if (isSelected) {
             g2.drawImage(hoverSprite.image, this.x, this.y, this.width, this.height, null);
         }
+    }
+    @Override
+    public String serialize(int tabSize) {
+        return "";
     }
 }

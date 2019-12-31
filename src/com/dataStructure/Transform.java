@@ -1,8 +1,9 @@
 package com.dataStructure;
 
+import com.file.Serialize;
 import com.util.Vector2;
 
-public class Transform {
+public class Transform extends Serialize {
     public Vector2 position;
     public Vector2 scale;
     public float rotation;
@@ -23,5 +24,18 @@ public class Transform {
     @Override
     public String toString() {
         return "Position (" + position.x + ", " + position.y + ")";
+    }
+
+    @Override
+    public String serialize(int tabSize) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(beginObjectProperty("Transform", tabSize));
+        builder.append(position.serialize(tabSize + 1)).append(addEnding(true, true));
+        builder.append(scale.serialize(tabSize + 1)).append(addEnding(true, true));
+        builder.append(addFloatProperty("rotation", rotation, tabSize + 1, true, false));
+        builder.append(closeObjectProperty(tabSize));
+
+        return builder.toString();
     }
 }

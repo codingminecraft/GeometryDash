@@ -9,6 +9,12 @@ import com.util.Vector2;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import java.awt.event.KeyEvent;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 public class LevelEditorScene extends Scene {
     public GameObject player;
     private GameObject ground;
@@ -49,6 +55,8 @@ public class LevelEditorScene extends Scene {
                 new Vector2(0, Constants.GROUND_Y)));
         ground.addComponent(new Ground());
 
+        player.setNonSerializable();
+        ground.setNonSerializable();
         addGameObject(player);
         addGameObject(ground);
     }
@@ -68,6 +76,10 @@ public class LevelEditorScene extends Scene {
         grid.update(dt);
         editingButtons.update(dt);
         mouseCursor.update(dt);
+
+        if (Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_F2)) {
+            export("Test");
+        }
     }
 
     @Override
@@ -81,5 +93,33 @@ public class LevelEditorScene extends Scene {
 
         // Should be drawn last
         mouseCursor.draw(g2);
+    }
+
+    private void export(String filename) {
+        try {
+            FileOutputStream fos = new  FileOutputStream("levels/" + filename + ".zip");
+            ZipOutputStream zos = new ZipOutputStream(fos);
+
+            zos.putNextEntry(new ZipEntry(filename + ".json"));
+
+            int i = 0;
+            for (GameObject go : gameObjects) {
+                String str = go.serialize(0);
+                if (str.compareTo("") != 0) {
+                    zos.write(str.getBytes());
+                    if (i != gameObjects.size() - 1) {
+                        zos.write(",\n".getBytes());
+                    }
+                }
+                i++;
+            }
+
+            zos.closeEntry();
+            zos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
     }
 }

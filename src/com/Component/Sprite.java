@@ -65,4 +65,40 @@ public class Sprite extends Component {
         else
             return new Sprite(this.image, this.row, this.column, this.index);
     }
+
+    @Override
+    public String serialize(int tabSize) {
+        if (isSubsprite) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(beginObjectProperty("Sprite", tabSize));
+            builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, true));
+            builder.append(addIntProperty("row", row, tabSize + 1, true, true));
+            builder.append(addIntProperty("column", column, tabSize + 1, true, true));
+            builder.append(addIntProperty("index", index, tabSize + 1, true, false));
+            builder.append(closeObjectProperty(tabSize));
+
+            return builder.toString();
+        }
+
+        return "";
+    }
+
+    @Override
+    public String serialize(int tabSize) {
+        if (isSubsprite) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(beginObjectProperty("Sprite", tabSize));
+            builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, true));
+            builder.append(addIntProperty("row", row, tabSize + 1, true, true));
+            builder.append(addIntProperty("column", column, tabSize + 1, true, true));
+            builder.append(addIntProperty("index", index, tabSize + 1, true, false));
+            builder.append(closeObjectProperty(tabSize));
+
+            return builder.toString();
+        }
+
+        return "";
+    }
 }
