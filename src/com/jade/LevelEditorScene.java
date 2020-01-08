@@ -3,6 +3,7 @@ package com.jade;
 import com.Component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.file.Parser;
 import com.main.Main;
 import com.ui.MainContainer;
 import com.util.Constants;
@@ -61,6 +62,16 @@ public class LevelEditorScene extends Scene {
         ground.setNonSerializable();
         addGameObject(player);
         addGameObject(ground);
+
+        Parser.openFile("Test");
+        System.out.println(Parser.parseInt());
+        System.out.println(Parser.parseInt());
+        System.out.println(Parser.parseBoolean());
+        System.out.println(Parser.parseBoolean());
+        System.out.println(Parser.parseDouble());
+        System.out.printf("%.3f\n", Parser.parseFloat());
+        System.out.println(Parser.parseString());
+        System.out.println(Parser.parseString());
     }
 
     public void initAssetPool() {
