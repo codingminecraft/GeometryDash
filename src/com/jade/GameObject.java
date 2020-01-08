@@ -1,6 +1,7 @@
 package com.jade;
 
 import com.dataStructure.Transform;
+import com.file.Parser;
 import com.file.Serialize;
 
 import java.awt.Graphics2D;
@@ -122,5 +123,30 @@ public class GameObject extends Serialize {
         builder.append(closeObjectProperty(tabSize));
 
         return builder.toString();
+    }
+
+    public static GameObject deserialize() {
+        Parser.consumeBeginObjectProperty("GameObject");
+
+        Transform transform = Transform.deserialize();
+        Parser.consume(',');
+
+        String name = Parser.consumeStringProperty("Name");
+        GameObject go = new GameObject(name, transform);
+
+        if (Parser.peek() == ',') {
+            Parser.consume(',');
+            Parser.consumeBeginObjectProperty("Components");
+            go.addComponent(Parser.parseComponent());
+
+            while (Parser.peek() == ',') {
+                Parser.consume(',');
+                go.addComponent(Parser.parseComponent());
+            }
+            Parser.consumeEndObjectProperty();
+        }
+        Parser.consumeEndObjectProperty();
+
+        return go;
     }
 }

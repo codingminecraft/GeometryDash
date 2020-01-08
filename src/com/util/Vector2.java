@@ -1,5 +1,6 @@
 package com.util;
 
+import com.file.Parser;
 import com.file.Serialize;
 
 public class Vector2 extends Serialize {
@@ -30,5 +31,14 @@ public class Vector2 extends Serialize {
         builder.append(closeObjectProperty(tabSize));
 
         return builder.toString();
+    }
+
+    public static Vector2 deserialize() {
+        Parser.consumeBeginObjectProperty("Vector2");
+        float x = Parser.consumeFloatProperty("x");
+        Parser.consume(',');
+        float y = Parser.consumeFloatProperty("y");
+        Parser.consumeEndObjectProperty();
+        return new Vector2(x, y);
     }
 }

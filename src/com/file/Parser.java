@@ -1,5 +1,9 @@
 package com.file;
 
+import com.Component.Sprite;
+import com.jade.Component;
+import com.jade.GameObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +30,16 @@ public class Parser {
             e.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    public static GameObject parseGameObject() {
+        if (bytes.length == 0 || atEnd()) return null;
+
+        if (peek() == ',') Parser.consume(',');
+        skipWhitespace();
+        if (atEnd()) return null;
+
+        return GameObject.deserialize();
     }
 
     public static void skipWhitespace() {
@@ -89,19 +103,10 @@ public class Parser {
         return builder.toString();
     }
 
-    public static double parseFloat() {
-        skipWhitespace();
-        char c;
-        StringBuilder builder = new StringBuilder();
-
-        while (!atEnd() && isDigit(peek()) || peek() == '.' || peek() == '-') {
-            c = advance();
-            builder.append(c);
-        }
-        builder.append('f');
+    public static float parseFloat() {
+        float f = (float)parseDouble();
         consume('f');
-
-        return Float.parseFloat(builder.toString());
+        return f;
     }
 
     public static int parseInt() {
@@ -117,7 +122,86 @@ public class Parser {
         return Integer.parseInt(builder.toString());
     }
 
-    private static void consume(char c) {
+    public static Component parseComponent() {
+        String componentTitle = Parser.parseString();
+        switch (componentTitle) {
+            case "Sprite":
+                skipWhitespace();
+                Parser.consume(':');
+                skipWhitespace();
+                Parser.consume('{');
+                return Sprite.deserialize();
+            default:
+                System.out.println("Could not find component of type \"" + componentTitle + "\" at line: " + Parser.line);
+                System.exit(-1);
+        }
+
+        return null;
+    }
+
+    public static void consumeEndObjectProperty() {
+        skipWhitespace();
+        Parser.consume('}');
+    }
+
+    public static void consumeBeginObjectProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        skipWhitespace();
+        consume(':');
+        skipWhitespace();
+        consume('{');
+    }
+
+    public static String consumeStringProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        consume(':');
+        return parseString();
+    }
+
+    public static int consumeIntProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        consume(':');
+        return parseInt();
+    }
+
+    public static double consumeDoubleProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        consume(':');
+        return parseDouble();
+    }
+
+    public static float consumeFloatProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        consume(':');
+        return parseFloat();
+    }
+
+    public static boolean consumeBooleanProperty(String name) {
+        skipWhitespace();
+        String title = parseString();
+        checkString(name, title);
+        consume(':');
+        return parseBoolean();
+    }
+
+    private static void checkString(String s1, String s2) {
+        if (s1.compareTo(s2) != 0) {
+            System.out.println("Expected '" + s1 + "' when deserializing instead got '" + s2 + "' at line: " + Parser.line);
+            System.exit(-1);
+        }
+    }
+
+    public static void consume(char c) {
         char actual = (char)bytes[offset];
         if (actual != c) {
             System.out.println("Error: Expected '" + c + "' instead got '" + actual + "' at line: " + Parser.line);
@@ -132,7 +216,7 @@ public class Parser {
         return c;
     }
 
-    private static char peek() {
+    public static char peek() {
         if (atEnd()) return '\0';
         return (char)bytes[offset];
     }
