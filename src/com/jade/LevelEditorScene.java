@@ -3,6 +3,7 @@ package com.jade;
 import com.Component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.file.Parser;
 import com.ui.MainContainer;
 import com.util.Constants;
 import com.util.Vector2;
@@ -92,6 +93,18 @@ public class LevelEditorScene extends Scene {
 
         if (Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_F1)) {
             export("Test");
+        } else if (Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_F2)) {
+            importLevel("Test");
+        }
+    }
+
+    private void importLevel(String filename) {
+        Parser.openFile(filename);
+
+        GameObject go = Parser.parseGameObject();
+        while (go != null) {
+            addGameObject(go);
+            go = Parser.parseGameObject();
         }
     }
 

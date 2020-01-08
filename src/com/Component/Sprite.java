@@ -1,6 +1,7 @@
 package com.Component;
 
 import com.dataStructure.AssetPool;
+import com.file.Parser;
 import com.jade.Component;
 
 import javax.imageio.ImageIO;
@@ -79,7 +80,7 @@ public class Sprite extends Component {
             builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, true));
             builder.append(addIntProperty("row", row, tabSize + 1, true, true));
             builder.append(addIntProperty("column", column, tabSize + 1, true, true));
-            builder.append(addIntProperty("index", index, tabSize + 1, true, true));
+            builder.append(addIntProperty("index", index, tabSize + 1, true, false));
             builder.append(closeObjectProperty(tabSize));
 
             return builder.toString();
@@ -88,5 +89,34 @@ public class Sprite extends Component {
         builder.append(addStringProperty("FilePath", pictureFile, tabSize + 1, true, false));
         builder.append(closeObjectProperty(tabSize));
         return builder.toString();
+    }
+
+    public static Sprite deserialize() {
+        boolean isSubsprite = Parser.consumeBooleanProperty("isSubsprite");
+        Parser.consume(',');
+        String filePath = Parser.consumeStringProperty("FilePath");
+
+        if (isSubsprite) {
+            Parser.consume(',');
+            Parser.consumeIntProperty("row");
+            Parser.consume(',');
+            Parser.consumeIntProperty("column");
+            Parser.consume(',');
+            int index = Parser.consumeIntProperty("index");
+            if (!AssetPool.hasSpritesheet(filePath)) {
+                System.out.println("Spritesheet '" + filePath + "' has not been loaded yet!");
+                System.exit(-1);
+            }
+            Parser.consumeEndObjectProperty();
+            return (Sprite)AssetPool.getSpritesheet(filePath).sprites.get(index).copy();
+        }
+
+        if (!AssetPool.hasSprite(filePath)) {
+            System.out.println("Sprite '" + filePath + "' has not been loaded yet!");
+            System.exit(-1);
+        }
+
+        Parser.consumeEndObjectProperty();
+        return (Sprite)AssetPool.getSprite(filePath).copy();
     }
 }

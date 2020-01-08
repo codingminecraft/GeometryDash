@@ -71,6 +71,7 @@ public class MenuItem extends Component {
     }
 
     @Override
+
     public String serialize(int tabSize) {
         return "";
     }

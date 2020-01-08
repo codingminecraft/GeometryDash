@@ -4,7 +4,7 @@ import com.file.Serialize;
 
 import java.awt.Graphics2D;
 
-public abstract class Component<T> extends Serialize {
+public abstract class Component extends Serialize {
 
     public GameObject gameObject;
 
