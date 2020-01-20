@@ -3,6 +3,7 @@ package com.jade;
 import com.Component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
+import com.file.Parser;
 import com.util.Constants;
 import com.util.Vector2;
 
@@ -13,6 +14,7 @@ public class LevelScene extends Scene {
     static LevelScene currentScene;
 
     public GameObject player;
+    public BoxBounds playerBounds;
 
     public LevelScene(String name) {
         super.Scene(name);
@@ -35,6 +37,8 @@ public class LevelScene extends Scene {
         player.addComponent(playerComp);
         player.addComponent(new Rigidbody(new Vector2(395, 0)));
         player.addComponent(new BoxBounds(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT));
+        playerBounds = new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+        player.addComponent(playerBounds);
 
         GameObject ground;
         ground = new GameObject("Ground", new Transform(
@@ -43,6 +47,8 @@ public class LevelScene extends Scene {
 
         addGameObject(player);
         addGameObject(ground);
+
+        importLevel("Test");
     }
 
     public void initAssetPool() {
@@ -73,6 +79,23 @@ public class LevelScene extends Scene {
 
         for (GameObject g : gameObjects) {
             g.update(dt);
+
+            Bounds b = g.getComponent(Bounds.class);
+            if (g != player && b != null) {
+                if (Bounds.checkCollision(playerBounds, b)) {
+                    System.out.println("Colliding!!");
+                }
+            }
+        }
+    }
+
+    private void importLevel(String filename) {
+        Parser.openFile(filename);
+
+        GameObject go = Parser.parseGameObject();
+        while (go != null) {
+            addGameObject(go);
+            go = Parser.parseGameObject();
         }
     }
 
