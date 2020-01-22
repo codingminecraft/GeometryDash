@@ -1,6 +1,7 @@
 package com.Component;
 
 import com.jade.Component;
+import com.jade.GameObject;
 
 enum BoundsType {
     Box,
@@ -19,5 +20,12 @@ public abstract class Bounds extends Component {
         }
 
         return false;
+    }
+
+    public static void resolveCollision(Bounds b, GameObject plr) {
+        if (b.type == BoundsType.Box) {
+            BoxBounds box = (BoxBounds)b;
+            box.resolveCollision(plr);
+        }
     }
 }

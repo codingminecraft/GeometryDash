@@ -2,6 +2,7 @@ package com.Component;
 
 import com.file.Parser;
 import com.jade.Component;
+import com.jade.GameObject;
 import com.util.Vector2;
 
 public class BoxBounds extends Bounds {
@@ -47,6 +48,42 @@ public class BoxBounds extends Bounds {
         }
 
         return false;
+    }
+
+    public void resolveCollision(GameObject player) {
+        BoxBounds playerBounds = player.getComponent(BoxBounds.class);
+        playerBounds.calculateCenter();
+        this.calculateCenter();
+
+        float dx = this.center.x - playerBounds.center.x;
+        float dy = this.center.y - playerBounds.center.y;
+
+        float combinedHalfWidths = playerBounds.halfWidth + this.halfWidth;
+        float combinedHalfHeights = playerBounds.halfHeight + this.halfHeight;
+
+        float overlapX = combinedHalfWidths - Math.abs(dx);
+        float overlapY = combinedHalfHeights - Math.abs(dy);
+
+        if (overlapX >= overlapY) {
+            if (dy > 0) {
+                // Collision on the top of the player
+                player.transform.position.y = gameObject.transform.position.y - playerBounds.getHeight();
+                player.getComponent(Rigidbody.class).velocity.y = 0;
+                player.getComponent(Player.class).onGround = true;
+            } else {
+                // Collision on the bottom of the player
+                player.getComponent(Player.class).die();
+            }
+        } else {
+            // Collision on the left or right of the player
+            if (dx < 0 && dy <= 0.3) {
+                player.transform.position.y = gameObject.transform.position.y - playerBounds.getHeight();
+                player.getComponent(Rigidbody.class).velocity.y = 0;
+                player.getComponent(Player.class).onGround = true;
+            } else {
+                player.getComponent(Player.class).die();
+            }
+        }
     }
 
     @Override

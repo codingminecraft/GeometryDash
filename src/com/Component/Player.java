@@ -1,10 +1,12 @@
 package com.Component;
 
 import com.jade.Component;
+import com.jade.Window;
 import com.util.Constants;
 
-import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 
 
@@ -12,6 +14,7 @@ public class Player extends Component {
 
     Sprite layerOne, layerTwo, layerThree;
     public int width, height;
+    public boolean onGround = true;
 
     public Player(Sprite layerOne, Sprite layerTwo, Sprite layerThree,
                   Color colorOne, Color colorTwo) {
@@ -41,7 +44,34 @@ public class Player extends Component {
         }
     }
 
+    @Override
+    public void update(double dt) {
+        if (onGround && Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
+            addJumpForce();
+            this.onGround = false;
+        }
 
+        if (!onGround) {
+            gameObject.transform.rotation += 10.0f * dt;
+        } else {
+            gameObject.transform.rotation = (int)gameObject.transform.rotation % 360;
+            if (gameObject.transform.rotation > 180 && gameObject.transform.rotation < 360) {
+                gameObject.transform.rotation = 0;
+            } else if (gameObject.transform.rotation > 0 && gameObject.transform.rotation < 180) {
+                gameObject.transform.rotation = 0;
+            }
+        }
+    }
+
+    private void addJumpForce() {
+        gameObject.getComponent(Rigidbody.class).velocity.y = Constants.JUMP_FORCE;
+    }
+
+    public void die() {
+        gameObject.transform.position.x = 0;
+        gameObject.transform.position.y = 30;
+        Window.getWindow().getCurrentScene().camera.position.x = 0;
+    }
 
     @Override
     public void draw(Graphics2D g2) {
