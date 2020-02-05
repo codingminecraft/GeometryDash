@@ -37,10 +37,10 @@ public class LevelEditorScene extends Scene {
         cameraControls = new CameraControls();
         editingButtons.start();
 
-        mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2()));
+        mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2()), 10);
         mouseCursor.addComponent(new SnapToGrid(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
 
-        player = new GameObject("Some game object", new Transform(new Vector2(500, 350.0f)));
+        player = new GameObject("Some game object", new Transform(new Vector2(500, 350.0f)), 0);
         Spritesheet layerOne = AssetPool.getSpritesheet("assets/player/layerOne.png");
         Spritesheet layerTwo = AssetPool.getSpritesheet("assets/player/layerTwo.png");
         Spritesheet layerThree = AssetPool.getSpritesheet("assets/player/layerThree.png");
@@ -53,7 +53,7 @@ public class LevelEditorScene extends Scene {
         player.addComponent(playerComp);
 
         ground = new GameObject("Ground", new Transform(
-                new Vector2(0, Constants.GROUND_Y)));
+                new Vector2(0, Constants.GROUND_Y)), 1);
         ground.addComponent(new Ground());
 
         ground.setNonserializable();

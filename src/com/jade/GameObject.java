@@ -13,11 +13,15 @@ public class GameObject extends Serialize {
     private String name;
     public Transform transform;
     private boolean serializable = true;
+    public int zIndex;
 
-    public GameObject(String name, Transform transform) {
+    public boolean isUi = false;
+
+    public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
         this.transform = transform;
         this.components = new ArrayList<>();
+        this.zIndex = zIndex;
     }
 
     public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -54,7 +58,7 @@ public class GameObject extends Serialize {
     }
 
     public GameObject copy() {
-        GameObject newGameObject = new GameObject("Generated", transform.copy());
+        GameObject newGameObject = new GameObject("Generated", transform.copy(), this.zIndex);
         for (Component c : components) {
             Component copy = c.copy();
             if (copy != null) {
@@ -93,12 +97,14 @@ public class GameObject extends Serialize {
         builder.append(transform.serialize(tabSize + 1));
         builder.append(addEnding(true, true));
 
+        builder.append(addStringProperty("Name", name, tabSize + 1, true, true));
+
         // Name
         if (components.size() > 0) {
-            builder.append(addStringProperty("Name", name, tabSize + 1, true, true));
+            builder.append(addIntProperty("ZIndex", this.zIndex, tabSize + 1, true, true));
             builder.append(beginObjectProperty("Components", tabSize + 1));
         } else {
-            builder.append(addStringProperty("Name", name, tabSize + 1, true, false));
+            builder.append(addIntProperty("ZIndex", this.zIndex, tabSize + 1, true, false));
         }
 
         int i = 0;
@@ -131,8 +137,10 @@ public class GameObject extends Serialize {
         Transform transform = Transform.deserialize();
         Parser.consume(',');
         String name = Parser.consumeStringProperty("Name");
+        Parser.consume(',');
+        int zIndex = Parser.consumeIntProperty("ZIndex");
 
-        GameObject go = new GameObject(name, transform);
+        GameObject go = new GameObject(name, transform, zIndex);
 
         if (Parser.peek() == ',') {
             Parser.consume(',');
@@ -148,5 +156,9 @@ public class GameObject extends Serialize {
         Parser.consumeEndObjectProperty();
 
         return go;
+    }
+
+    public void setUi(boolean val) {
+        this.isUi = val;
     }
 }

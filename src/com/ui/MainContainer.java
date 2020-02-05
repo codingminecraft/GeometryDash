@@ -33,7 +33,7 @@ public class MainContainer extends Component {
             int y = Constants.BUTTON_OFFSET_Y + (currentSprite.row * Constants.BUTTON_HEIGHT) +
                     (currentSprite.row * Constants.BUTTON_SPACING_VT);
 
-            GameObject obj = new GameObject("Generated", new Transform(new Vector2(x, y)));
+            GameObject obj = new GameObject("Generated", new Transform(new Vector2(x, y)), -1);
             obj.addComponent(currentSprite.copy());
             MenuItem menuItem = new MenuItem(x, y, Constants.BUTTON_WIDTH, Constants.BUTTON_HEIGHT,
                     buttonSprites.sprites.get(0), buttonSprites.sprites.get(1));

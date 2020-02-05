@@ -4,8 +4,9 @@ import com.util.Constants;
 import com.util.Time;
 
 import javax.swing.JFrame;
-import java.awt.*;
-import java.util.logging.Level;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 
 public class Window extends JFrame implements Runnable {
 
