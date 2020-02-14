@@ -15,8 +15,13 @@ public abstract class Bounds extends Component {
     abstract public float getHeight();
 
     public static boolean checkCollision(Bounds b1, Bounds b2) {
+        // We know that at least 1 bounds will always be a box
         if (b1.type == b2.type && b1.type == BoundsType.Box) {
             return BoxBounds.checkCollision((BoxBounds)b1, (BoxBounds)b2);
+        } else if (b1.type == BoundsType.Box && b2.type == BoundsType.Triangle) {
+            return TriangleBounds.checkCollision((BoxBounds)b1, (TriangleBounds)b2);
+        } else if (b1.type == BoundsType.Triangle && b2.type == BoundsType.Box) {
+            return TriangleBounds.checkCollision((BoxBounds)b2, (TriangleBounds)b1);
         }
 
         return false;

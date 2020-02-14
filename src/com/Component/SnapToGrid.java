@@ -31,7 +31,7 @@ public class SnapToGrid extends Component {
             this.gameObject.transform.position.x = x * gridWidth - Window.getWindow().getCurrentScene().camera.position.x;
             this.gameObject.transform.position.y = y * gridWidth - Window.getWindow().getCurrentScene().camera.position.y;
 
-            if (Window.getWindow().mouseListener.y < Constants.BUTTON_OFFSET_Y &&
+            if (Window.getWindow().mouseListener.y < Constants.TAB_OFFSET_Y &&
                 Window.getWindow().mouseListener.mousePressed &&
                 Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1 &&
                 debounceLeft < 0) {

@@ -10,11 +10,15 @@ public class BoxBounds extends Bounds {
     public float halfWidth, halfHeight;
     public Vector2 center = new Vector2();
 
+    public float enclosingRadius;
+
     public BoxBounds(float width, float height) {
         this.width = width;
         this.height = height;
         this.halfWidth = this.width / 2.0f;
         this.halfHeight = this.height / 2.0f;
+        this.enclosingRadius = (float)Math.sqrt((this.halfWidth * this.halfWidth) +
+                (this.halfHeight * this.halfHeight));
         this.type = BoundsType.Box;
     }
 

@@ -17,7 +17,10 @@ public class MenuItem extends Component {
 
     private int bufferX, bufferY;
 
-    public MenuItem(int x, int y, int width, int height, Sprite buttonSprite, Sprite hoverSprite) {
+    private MainContainer parentContainer;
+
+    public MenuItem(int x, int y, int width, int height, Sprite buttonSprite, Sprite hoverSprite,
+                    MainContainer parent) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -25,6 +28,7 @@ public class MenuItem extends Component {
         this.buttonSprite = buttonSprite;
         this.hoverSprite = hoverSprite;
         this.isSelected = false;
+        this.parentContainer = parent;
     }
 
     @Override
@@ -37,12 +41,12 @@ public class MenuItem extends Component {
 
     @Override
     public void update(double dt) {
-        if (!isSelected &&
-            Window.getWindow().mouseListener.x > this.x && Window.getWindow().mouseListener.x <= this.x + this.width &&
-            Window.getWindow().mouseListener.y > this.y && Window.getWindow().mouseListener.y <= this.y + this.height) {
-            if (Window.getWindow().mouseListener.mousePressed &&
-                    Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1) {
-                // Clicked inside the button
+        if (Window.getWindow().mouseListener.mousePressed &&
+                Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1) {
+            if (!isSelected &&
+                Window.getWindow().mouseListener.x > this.x && Window.getWindow().mouseListener.x <= this.x + this.width &&
+                Window.getWindow().mouseListener.y > this.y && Window.getWindow().mouseListener.y <= this.y + this.height) {
+                    // Clicked inside the button
                 GameObject obj = gameObject.copy();
                 obj.removeComponent(MenuItem.class);
                 LevelEditorScene scene = (LevelEditorScene)Window.getWindow().getCurrentScene();
@@ -51,6 +55,7 @@ public class MenuItem extends Component {
                 obj.addComponent(snapToGrid);
                 scene.mouseCursor = obj;
                 isSelected = true;
+                this.parentContainer.setHotButton(gameObject);
             }
         }
     }
@@ -58,7 +63,8 @@ public class MenuItem extends Component {
     @Override
     public MenuItem copy() {
         return new MenuItem(this.x, this.y, this.width, this.height,
-                (Sprite)this.buttonSprite.copy(), (Sprite)this.hoverSprite.copy());
+                (Sprite)this.buttonSprite.copy(), (Sprite)this.hoverSprite.copy(),
+                parentContainer);
     }
 
     @Override

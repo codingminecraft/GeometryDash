@@ -52,14 +52,10 @@ public class LevelEditorScene extends Scene {
                 Color.GREEN);
         player.addComponent(playerComp);
 
-        ground = new GameObject("Ground", new Transform(
-                new Vector2(0, Constants.GROUND_Y)), 1);
-        ground.addComponent(new Ground());
-
-        ground.setNonserializable();
         player.setNonserializable();
         addGameObject(player);
-        addGameObject(ground);
+
+        initBackgrounds();
     }
 
     public void initAssetPool() {
@@ -83,6 +79,43 @@ public class LevelEditorScene extends Scene {
                 42, 42, 2, 6, 1);
         AssetPool.addSpritesheet("assets/portal.png",
                 44, 85, 2, 2, 2);
+    }
+
+    public void initBackgrounds() {
+        ground = new GameObject("Ground", new Transform(
+                new Vector2(0, Constants.GROUND_Y)), 1);
+        ground.addComponent(new Ground());
+        ground.setNonserializable();
+        addGameObject(ground);
+
+        int numBackgrounds = 5;
+        GameObject[] backgrounds = new GameObject[numBackgrounds];
+        GameObject[] groundBgs = new GameObject[numBackgrounds];
+        for (int i=0; i < numBackgrounds; i++) {
+            ParallaxBackground bg = new ParallaxBackground("assets/backgrounds/bg01.png",
+                    null, ground.getComponent(Ground.class), false);
+            int x = i * bg.sprite.width;
+            int y = 0;
+
+            GameObject go = new GameObject("Background", new Transform(new Vector2(x, y)), -10);
+            go.setUi(true);
+            go.addComponent(bg);
+            go.setNonserializable();
+            backgrounds[i] = go;
+
+            ParallaxBackground groundBg = new ParallaxBackground("assets/grounds/ground01.png",
+                    null, ground.getComponent(Ground.class), true);
+            x = i * groundBg.sprite.width;
+            y = (int)ground.transform.position.y;
+            GameObject groundGo = new GameObject("GroundBg", new Transform(new Vector2(x, y)), -9);
+            groundGo.addComponent(groundBg);
+            groundGo.setUi(true);
+            groundGo.setNonserializable();
+            groundBgs[i] = groundGo;
+
+            addGameObject(go);
+            addGameObject(groundGo);
+        }
     }
 
     @Override
@@ -150,7 +183,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.setColor(new Color(1.0f, 1.0f, 1.0f));
+        g2.setColor(Constants.BG_COLOR);
         g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
 
         renderer.render(g2);
