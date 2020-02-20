@@ -31,6 +31,8 @@ public abstract class Bounds extends Component {
         if (b.type == BoundsType.Box) {
             BoxBounds box = (BoxBounds)b;
             box.resolveCollision(plr);
+        } else if (b.type == BoundsType.Triangle) {
+            plr.getComponent(Player.class).die();
         }
     }
 }

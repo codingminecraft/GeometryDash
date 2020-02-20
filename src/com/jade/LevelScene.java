@@ -36,8 +36,7 @@ public class LevelScene extends Scene {
                 Color.GREEN);
         player.addComponent(playerComp);
         player.addComponent(new Rigidbody(new Vector2(Constants.PLAYER_SPEED, 0)));
-        player.addComponent(new BoxBounds(Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT));
-        playerBounds = new BoxBounds(Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+        playerBounds = new BoxBounds(Constants.TILE_WIDTH - 2, Constants.TILE_HEIGHT - 2);
         player.addComponent(playerBounds);
 
         renderer.submit(player);
