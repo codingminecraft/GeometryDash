@@ -3,7 +3,12 @@ package com.Component;
 import com.file.Parser;
 import com.jade.Component;
 import com.jade.GameObject;
+import com.util.Constants;
 import com.util.Vector2;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 public class BoxBounds extends Bounds {
     public float width, height;
@@ -124,5 +129,27 @@ public class BoxBounds extends Bounds {
     @Override
     public float getHeight() {
         return this.height;
+    }
+
+    @Override
+    public boolean raycast(Vector2 position) {
+        return position.x > this.gameObject.transform.position.x &&
+                position.x < this.gameObject.transform.position.x + this.width &&
+                position.y > this.gameObject.transform.position.y &&
+                position.y < this.gameObject.transform.position.y + this.height;
+    }
+
+    @Override
+    public void draw(Graphics2D g2) {
+        if (isSelected) {
+            g2.setColor(Color.GREEN);
+            g2.setStroke(Constants.THICK_LINE);
+            g2.draw(new Rectangle2D.Float(
+                    this.gameObject.transform.position.x,
+                    this.gameObject.transform.position.y,
+                    this.width,
+                    this.height));
+            g2.setStroke(Constants.LINE);
+        }
     }
 }

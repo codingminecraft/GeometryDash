@@ -2,10 +2,13 @@ package com.Component;
 
 import com.file.Parser;
 import com.jade.Component;
+import com.jade.Window;
 import com.util.Constants;
 import com.util.Vector2;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 
 public class TriangleBounds extends Bounds {
     private float base, height, halfWidth, halfHeight;
@@ -193,12 +196,58 @@ public class TriangleBounds extends Bounds {
         return this.height;
     }
 
+    public float dot(Vector2 v1, Vector2 v2) {
+        return v1.x * v2.x + v1.y * v2.y;
+    }
+
+    @Override
+    public boolean raycast(Vector2 position) {
+        // Compute vectors
+        Vector2 v0 = new Vector2(x3 - x1, y3 - y1);
+        Vector2 v1 = new Vector2(x2 - x1, y2 - y1);
+        Vector2 v2 = new Vector2(position.x - x1, position.y - y1);
+
+        // Compute dot products
+        float dot00 = dot(v0, v0);
+        float dot01 = dot(v0, v1);
+        float dot02 = dot(v0, v2);
+        float dot11 = dot(v1, v1);
+        float dot12 = dot(v1, v2);
+
+        // Compute barycentric coordinates
+        float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
+        float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+        float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+        // Check if point is in triangle
+        return (u >= 0.0f) && (v >= 0.0f) && (u + v < 1.0f);
+    }
+
     @Override
     public void draw(Graphics2D g2) {
-//        g2.setColor(Color.GREEN);
-//        g2.draw(new Line2D.Float(this.x1, this.y1, this.x2, this.y2));
-//        g2.draw(new Line2D.Float(this.x1, this.y1, this.x3, this.y3));
-//        g2.draw(new Line2D.Float(this.x3, this.y3, this.x2, this.y2));
+        if (isSelected) {
+            g2.setStroke(Constants.THICK_LINE);
+            g2.setColor(Color.GREEN);
+            g2.draw(new Line2D.Float(
+                    this.x1 - Window.getScene().camera.position.x,
+                    this.y1 - Window.getScene().camera.position.y,
+                    this.x2 - Window.getScene().camera.position.x,
+                    this.y2 - Window.getScene().camera.position.y));
+
+            g2.draw(new Line2D.Float(
+                    this.x1 - Window.getScene().camera.position.x,
+                    this.y1 - Window.getScene().camera.position.y,
+                    this.x3 - Window.getScene().camera.position.x,
+                    this.y3 - Window.getScene().camera.position.y));
+
+            g2.draw(new Line2D.Float(
+                    this.x3 - Window.getScene().camera.position.x,
+                    this.y3 - Window.getScene().camera.position.y,
+                    this.x2 - Window.getScene().camera.position.x,
+                    this.y2 - Window.getScene().camera.position.y));
+
+            g2.setStroke(Constants.LINE);
+        }
     }
 
     @Override

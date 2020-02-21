@@ -38,7 +38,7 @@ public class LevelEditorScene extends Scene {
         editingButtons.start();
 
         mouseCursor = new GameObject("Mouse Cursor", new Transform(new Vector2()), 10);
-        mouseCursor.addComponent(new SnapToGrid(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
+        mouseCursor.addComponent(new LevelEditorControls(Constants.TILE_WIDTH, Constants.TILE_HEIGHT));
 
         player = new GameObject("Some game object", new Transform(new Vector2(500, 350.0f)), 0);
         Spritesheet layerOne = AssetPool.getSpritesheet("assets/player/layerOne.png");

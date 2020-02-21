@@ -23,6 +23,10 @@ public abstract class Scene {
 
     }
 
+    public List<GameObject> getAllGameObjects() {
+        return gameObjects;
+    }
+
     public void addGameObject(GameObject g) {
         gameObjects.add(g);
         renderer.submit(g);
