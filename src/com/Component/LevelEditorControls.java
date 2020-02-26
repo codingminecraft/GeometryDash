@@ -14,9 +14,18 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+enum Direction {
+    UP, DOWN, LEFT, RIGHT
+}
+
 public class LevelEditorControls extends Component {
     private float debounceTime = 0.2f;
     private float debounceLeft = 0.0f;
+
+    private float debounceKey = 0.2f;
+    private float debounceKeyLeft = 0.0f;
+
+    private boolean shiftKeyPressed = false;
 
     private List<GameObject> selectedObjects;
 
@@ -80,6 +89,7 @@ public class LevelEditorControls extends Component {
     @Override
     public void update(double dt) {
         debounceLeft -= dt;
+        debounceKeyLeft -= dt;
 
         if (!isEditing && this.gameObject.getComponent(Sprite.class) != null) {
             this.isEditing = true;
@@ -111,6 +121,77 @@ public class LevelEditorControls extends Component {
 
         if (Window.keyListener().isKeyPressed(KeyEvent.VK_ESCAPE)) {
             escapeKeyPressed();
+        }
+
+        if (Window.keyListener().isKeyPressed(KeyEvent.VK_SHIFT)) {
+            shiftKeyPressed = true;
+        } else {
+            shiftKeyPressed = false;
+        }
+
+        if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_LEFT)) {
+            moveObjects(Direction.LEFT, shiftKeyPressed ? 0.1f : 1.0f);
+            debounceKeyLeft = debounceKey;
+        } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_RIGHT)) {
+            moveObjects(Direction.RIGHT, shiftKeyPressed ? 0.1f : 1.0f);
+            debounceKeyLeft = debounceKey;
+        } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_UP)) {
+            moveObjects(Direction.UP, shiftKeyPressed ? 0.1f : 1.0f);
+            debounceKeyLeft = debounceKey;
+        } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_DOWN)) {
+            moveObjects(Direction.DOWN, shiftKeyPressed ? 0.1f : 1.0f);
+            debounceKeyLeft = debounceKey;
+        }
+
+        if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_CONTROL)) {
+            if (Window.keyListener().isKeyPressed(KeyEvent.VK_D)) {
+                duplicate();
+                debounceKeyLeft = debounceKey;
+            }
+        }
+
+    }
+
+    public void moveObjects(Direction direction, float scale) {
+        Vector2 distance = new Vector2(0.0f, 0.0f);
+        switch (direction) {
+            case UP:
+                distance.y = -Constants.TILE_HEIGHT * scale;
+                break;
+            case DOWN:
+                distance.y = Constants.TILE_HEIGHT * scale;
+                break;
+            case LEFT:
+                distance.x = -Constants.TILE_WIDTH * scale;
+                break;
+            case RIGHT:
+                distance.x = Constants.TILE_WIDTH * scale;
+                break;
+            default:
+                System.out.println("Error: Direction has no enum '" + direction + "'");
+                System.exit(-1);
+                break;
+        }
+
+        for (GameObject go : selectedObjects) {
+            go.transform.position.x += distance.x;
+            go.transform.position.y += distance.y;
+            float gridX = (float)(Math.floor(go.transform.position.x / Constants.TILE_WIDTH) + 1) * Constants.TILE_WIDTH;
+            float gridY = (float)(Math.floor(go.transform.position.y / Constants.TILE_WIDTH) * Constants.TILE_WIDTH);
+
+            if (go.transform.position.x < gridX + 1 && go.transform.position.x > gridX - 1) {
+                go.transform.position.x = gridX;
+            }
+
+            if (go.transform.position.y < gridY + 1 && go.transform.position.y > gridY - 1) {
+                go.transform.position.y = gridY;
+            }
+        }
+    }
+
+    public void duplicate() {
+        for (GameObject go : selectedObjects) {
+            Window.getScene().addGameObject(go.copy());
         }
     }
 
