@@ -141,6 +141,15 @@ public class LevelEditorScene extends Scene {
         } else if (Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_F3)) {
             Window.getWindow().changeScene(1);
         }
+
+
+        if (objsToRemove.size() > 0) {
+            for (GameObject go : objsToRemove) {
+                gameObjects.remove(go);
+                renderer.gameObjects.get(go.zIndex).remove(go);
+            }
+            objsToRemove.clear();
+        }
     }
 
     private void importLevel(String filename) {

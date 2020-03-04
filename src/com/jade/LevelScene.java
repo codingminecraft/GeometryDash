@@ -90,6 +90,7 @@ public class LevelScene extends Scene {
                 42, 42, 2, 13, 13 * 5);
         AssetPool.addSpritesheet("assets/groundSprites.png",
                 42, 42, 2, 6, 12);
+        AssetPool.getSprite("assets/player/spaceship.png");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.Component;
 
+import com.dataStructure.AssetPool;
 import com.jade.Component;
 import com.jade.Window;
 import com.util.Constants;
@@ -12,17 +13,21 @@ import java.awt.geom.AffineTransform;
 
 public class Player extends Component {
 
-    Sprite layerOne, layerTwo, layerThree;
+    Sprite layerOne, layerTwo, layerThree, spaceship;
     public int width, height;
     public boolean onGround = true;
+    public PlayerState state;
 
     public Player(Sprite layerOne, Sprite layerTwo, Sprite layerThree,
                   Color colorOne, Color colorTwo) {
+        this.spaceship = AssetPool.getSprite("assets/player/spaceship.png");
+
         this.width = Constants.PLAYER_WIDTH;
         this.height = Constants.PLAYER_HEIGHT;
         this.layerOne = layerOne;
         this.layerTwo = layerTwo;
         this.layerThree = layerThree;
+        this.state = PlayerState.NORMAL;
 
         int threshold = 200;
         for (int y=0; y < layerOne.image.getWidth(); y++) {
@@ -47,13 +52,20 @@ public class Player extends Component {
     @Override
     public void update(double dt) {
         if (onGround && Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
-            addJumpForce();
+            if (state == PlayerState.NORMAL) {
+                addJumpForce();
+            }
             this.onGround = false;
         }
 
-        if (!onGround) {
+        if (PlayerState.FLYING == this.state && Window.getWindow().keyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
+            addFlyForce();
+            this.onGround = false;
+        }
+
+        if (this.state != PlayerState.FLYING && !onGround) {
             gameObject.transform.rotation += 10.0f * dt;
-        } else {
+        } else if (this.state != PlayerState.FLYING) {
             gameObject.transform.rotation = (int)gameObject.transform.rotation % 360;
             if (gameObject.transform.rotation > 180 && gameObject.transform.rotation < 360) {
                 gameObject.transform.rotation = 0;
@@ -64,6 +76,10 @@ public class Player extends Component {
     }
 
     private void addJumpForce() {
+        gameObject.getComponent(Rigidbody.class).velocity.y = Constants.JUMP_FORCE;
+    }
+
+    private void addFlyForce() {
         gameObject.getComponent(Rigidbody.class).velocity.y = Constants.JUMP_FORCE;
     }
 
@@ -84,9 +100,33 @@ public class Player extends Component {
                 width * gameObject.transform.scale.x / 2.0,
                 height * gameObject.transform.scale.y / 2.0);
         transform.scale(gameObject.transform.scale.x, gameObject.transform.scale.y);
-        g2.drawImage(layerOne.image, transform, null);
-        g2.drawImage(layerTwo.image, transform, null);
-        g2.drawImage(layerThree.image, transform, null);
+
+        if (state == PlayerState.NORMAL) {
+            g2.drawImage(layerOne.image, transform, null);
+            g2.drawImage(layerTwo.image, transform, null);
+            g2.drawImage(layerThree.image, transform, null);
+        } else {
+            transform.setToIdentity();
+            transform.translate(gameObject.transform.position.x,
+                    gameObject.transform.position.y);
+            transform.rotate(gameObject.transform.rotation,
+                    width * gameObject.transform.scale.x / 4.0,
+                    height * gameObject.transform.scale.y / 4.0);
+            transform.scale(gameObject.transform.scale.x / 2, gameObject.transform.scale.y / 2);
+            transform.translate(15, 15);
+            g2.drawImage(layerOne.image, transform, null);
+            g2.drawImage(layerTwo.image, transform, null);
+            g2.drawImage(layerThree.image, transform, null);
+
+
+            transform.setToIdentity();
+            transform.translate(gameObject.transform.position.x, gameObject.transform.position.y);
+            transform.rotate(gameObject.transform.rotation,
+                    width * gameObject.transform.scale.x / 2.0,
+                    height * gameObject.transform.scale.y / 2.0);
+            transform.scale(gameObject.transform.scale.x, gameObject.transform.scale.y);
+            g2.drawImage(spaceship.image, transform, null);
+        }
     }
 
     @Override

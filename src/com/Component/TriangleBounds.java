@@ -166,7 +166,7 @@ public class TriangleBounds extends Bounds {
         return new Vector2(newX + o.x, newY + o.y);
     }
 
-    private void calculateTransform() {
+    public void calculateTransform() {
         double rAngle = Math.toRadians(gameObject.transform.rotation);
         Vector2 p1 = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y + height);
         Vector2 p2 = new Vector2(gameObject.transform.position.x + halfWidth, gameObject.transform.position.y);

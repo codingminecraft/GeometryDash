@@ -8,6 +8,7 @@ import com.util.Constants;
 import com.util.Vector2;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -32,6 +33,9 @@ public class LevelEditorControls extends Component {
     int gridWidth, gridHeight;
     private float worldX, worldY;
     private boolean isEditing = false;
+
+    private boolean wasDragged = false;
+    private float dragX, dragY, dragWidth, dragHeight;
 
     public LevelEditorControls(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -63,6 +67,25 @@ public class LevelEditorControls extends Component {
                 break;
             }
         }
+    }
+
+    public List<GameObject> boxCast(float x, float y, float width, float height) {
+        float x0 = x + Window.getScene().camera.position.x;
+        float y0 = y + Window.getScene().camera.position.y;
+
+        List<GameObject> objs = new ArrayList<>();
+        for (GameObject go : Window.getScene().getAllGameObjects()) {
+            Bounds b = go.getComponent(Bounds.class);
+            if (b != null) {
+                if (go.transform.position.x + b.getWidth() <= x0 + width &&
+                    go.transform.position.y + b.getHeight() <= y0 + height &&
+                    go.transform.position.x >= x0 && go.transform.position.y >= y0) {
+                    objs.add(go);
+                }
+            }
+        }
+
+        return objs;
     }
 
     public void clearSelectedObjectsAndAdd(Vector2 mousePos) {
@@ -106,7 +129,7 @@ public class LevelEditorControls extends Component {
         if (Window.getWindow().mouseListener.y < Constants.TAB_OFFSET_Y &&
             Window.getWindow().mouseListener.mousePressed &&
             Window.getWindow().mouseListener.mouseButton == MouseEvent.BUTTON1 &&
-            debounceLeft < 0) {
+            debounceLeft < 0 && !wasDragged) {
             // Mouse has been clicked
             debounceLeft = debounceTime;
 
@@ -116,6 +139,17 @@ public class LevelEditorControls extends Component {
                 addGameObjectToSelected(new Vector2(Window.mouseListener().x, Window.mouseListener().y));
             } else {
                 clearSelectedObjectsAndAdd(new Vector2(Window.mouseListener().x, Window.mouseListener().y));
+            }
+        } else if (!Window.mouseListener().mousePressed && wasDragged) {
+            wasDragged = false;
+            clearSelected();
+            List<GameObject> objs = boxCast(dragX, dragY, dragWidth, dragHeight);
+            for (GameObject go : objs) {
+                selectedObjects.add(go);
+                Bounds b = go.getComponent(Bounds.class);
+                if (b != null) {
+                    b.isSelected = true;
+                }
             }
         }
 
@@ -141,6 +175,11 @@ public class LevelEditorControls extends Component {
         } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_DOWN)) {
             moveObjects(Direction.DOWN, shiftKeyPressed ? 0.1f : 1.0f);
             debounceKeyLeft = debounceKey;
+        } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_DELETE)) {
+            for (GameObject go : selectedObjects) {
+                Window.getScene().removeGameObject(go);
+            }
+            selectedObjects.clear();
         }
 
         if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_CONTROL)) {
@@ -150,6 +189,23 @@ public class LevelEditorControls extends Component {
             }
         }
 
+        if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_Q)) {
+            rotateObjects(90);
+            debounceKeyLeft = debounceKey;
+        } else if (debounceKeyLeft <= 0 && Window.keyListener().isKeyPressed(KeyEvent.VK_E)) {
+            rotateObjects(-90);
+            debounceKeyLeft = debounceKey;
+        }
+
+
+    }
+
+    public void rotateObjects(float degrees) {
+        for (GameObject go : selectedObjects) {
+            go.transform.rotation += degrees;
+            TriangleBounds b = go.getComponent(TriangleBounds.class);
+            if (b != null) b.calculateTransform();
+        }
     }
 
     public void moveObjects(Direction direction, float scale) {
@@ -186,6 +242,9 @@ public class LevelEditorControls extends Component {
             if (go.transform.position.y < gridY + 1 && go.transform.position.y > gridY - 1) {
                 go.transform.position.y = gridY;
             }
+
+            TriangleBounds b = go.getComponent(TriangleBounds.class);
+            if (b != null) b.calculateTransform();
         }
     }
 
@@ -197,16 +256,35 @@ public class LevelEditorControls extends Component {
 
     @Override
     public void draw(Graphics2D g2) {
-        Sprite sprite = gameObject.getComponent(Sprite.class);
-        if (sprite != null) {
-            float alpha = 0.5f;
-            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
-            g2.drawImage(sprite.image, (int)gameObject.transform.position.x, (int)gameObject.transform.position.y,
-                    (int)sprite.width, (int)sprite.height, null);
-            alpha = 1.0f;
-            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
-            g2.setComposite(ac);
+        if (isEditing) {
+            Sprite sprite = gameObject.getComponent(Sprite.class);
+            if (sprite != null) {
+                float alpha = 0.5f;
+                AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+                g2.setComposite(ac);
+                g2.drawImage(sprite.image, (int) gameObject.transform.position.x, (int) gameObject.transform.position.y,
+                        (int) sprite.width, (int) sprite.height, null);
+                alpha = 1.0f;
+                ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha);
+                g2.setComposite(ac);
+            }
+        } else if (Window.mouseListener().mouseDragged &&
+                Window.mouseListener().mouseButton == MouseEvent.BUTTON1){
+            wasDragged = true;
+            g2.setColor(new Color(1, 1, 1, 0.3f));
+            dragX = Window.mouseListener().x;
+            dragY = Window.mouseListener().y;
+            dragWidth = Window.mouseListener().dx;
+            dragHeight = Window.mouseListener().dy;
+            if (dragWidth < 0) {
+                dragWidth *= -1;
+                dragX -= dragWidth;
+            }
+            if (dragHeight < 0) {
+                dragHeight *= -1;
+                dragY -= dragHeight;
+            }
+            g2.fillRect((int)dragX, (int)dragY, (int)dragWidth, (int)dragHeight);
         }
     }
 

@@ -46,4 +46,5 @@ public class Constants {
 
     public static final Stroke LINE = new BasicStroke(1.0f);
     public static final Stroke THICK_LINE = new BasicStroke(2.0f);
+    public static final float FLY_TERMINAL_VELOCITY = 1900;
 }

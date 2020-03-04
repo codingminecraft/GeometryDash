@@ -5,7 +5,8 @@ import com.file.Parser;
 import com.jade.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -57,8 +58,14 @@ public class Sprite extends Component {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.drawImage(image, (int)gameObject.transform.position.x,
-                (int)gameObject.transform.position.y, width, height, null);
+        AffineTransform transform = new AffineTransform();
+        transform.setToIdentity();
+        transform.translate(gameObject.transform.position.x, gameObject.transform.position.y);
+        transform.rotate(Math.toRadians(gameObject.transform.rotation),
+                width * gameObject.transform.scale.x / 2.0,
+                height * gameObject.transform.scale.y / 2.0);
+        transform.scale(gameObject.transform.scale.x, gameObject.transform.scale.y);
+        g2.drawImage(image, transform, null);
     }
 
     @Override

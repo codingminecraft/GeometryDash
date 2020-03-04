@@ -1,6 +1,7 @@
 package com.file;
 
 import com.Component.BoxBounds;
+import com.Component.Portal;
 import com.Component.Sprite;
 import com.Component.TriangleBounds;
 import com.jade.Component;
@@ -163,6 +164,8 @@ public class Parser {
                 return BoxBounds.deserialize();
             case "TriangleBounds":
                 return TriangleBounds.deserialize();
+            case "Portal":
+                return Portal.deserialize();
             default:
                 System.out.println("Could not find component '" + componentTitle + "' at line: " + Parser.line);
                 System.exit(-1);

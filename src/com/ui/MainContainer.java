@@ -1,9 +1,6 @@
 package com.ui;
 
-import com.Component.BoxBounds;
-import com.Component.Sprite;
-import com.Component.Spritesheet;
-import com.Component.TriangleBounds;
+import com.Component.*;
 import com.dataStructure.AssetPool;
 import com.dataStructure.Transform;
 import com.jade.Component;
@@ -115,7 +112,6 @@ public class MainContainer extends Component {
                 obj.addComponent(spikeSprites.sprites.get(i));
                 obj.addComponent(menuItem);
 
-                // TODO:: Add triangleBounds component here
                 obj.addComponent(new TriangleBounds(42, 42));
 
                 this.tabMaps.get(this.tabs.get(3)).add(obj);
@@ -142,9 +138,13 @@ public class MainContainer extends Component {
                 menuItem = menuItem.copy();
                 obj.addComponent(menuItem);
                 obj.addComponent(portalSprites.sprites.get(i));
-                obj.addComponent(new BoxBounds(44, 85));
+                obj.addComponent(new BoxBounds(44, 85, true));
 
                 // TODO:: Create portalComponent here
+                if (i == 0)
+                    obj.addComponent(new Portal(PlayerState.FLYING));
+                else
+                    obj.addComponent(new Portal(PlayerState.NORMAL));
 
                 this.tabMaps.get(tabs.get(5)).add(obj);
             }
