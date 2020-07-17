@@ -7,6 +7,7 @@ import com.Component.TriangleBounds;
 import com.jade.Component;
 import com.jade.GameObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,9 @@ public class Parser {
 
     public static void openFile(String filename) {
         File tmp = new File("levels/" + filename + ".zip");
+        Parser.bytes = new byte[0];
+        Parser.offset = 0;
+        Parser.line = 1;
         if (!tmp.exists()) return;
 
         try {
@@ -27,7 +31,14 @@ public class Parser {
             ZipEntry jsonFile = zipFile.getEntry(filename + ".json");
             InputStream stream = zipFile.getInputStream(jsonFile);
 
-            Parser.bytes = stream.readAllBytes();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = stream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            Parser.bytes = buffer.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);

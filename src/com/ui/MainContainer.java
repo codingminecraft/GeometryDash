@@ -98,7 +98,9 @@ public class MainContainer extends Component {
                 obj.addComponent(menuItem);
 
                 if (i == 0) {
-                    obj.addComponent(new BoxBounds(Constants.TILE_WIDTH, 16));
+                    BoxBounds boxBounds = new BoxBounds(Constants.TILE_WIDTH, 16);
+                    boxBounds.yBuffer = 42 - 16;
+                    obj.addComponent(boxBounds);
                 }
                 this.tabMaps.get(tabs.get(1)).add(obj);
             }

@@ -99,10 +99,7 @@ public class LevelScene extends Scene {
         if (player.transform.position.x - camera.position.x > Constants.CAMERA_OFFSET_X) {
             camera.position.x = player.transform.position.x - Constants.CAMERA_OFFSET_X;
         }
-
-        if (player.transform.position.y - camera.position.y > Constants.CAMERA_OFFSET_Y) {
-            camera.position.y = player.transform.position.y - Constants.CAMERA_OFFSET_Y;
-        }
+        camera.position.y = player.transform.position.y - Constants.CAMERA_OFFSET_Y;
 
         if (camera.position.y > Constants.CAMERA_OFFSET_GROUND_Y) {
             camera.position.y = Constants.CAMERA_OFFSET_GROUND_Y;

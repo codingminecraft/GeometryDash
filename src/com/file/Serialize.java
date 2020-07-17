@@ -32,7 +32,11 @@ public abstract class Serialize {
     }
 
     public String addTabs(int tabSize) {
-        return "\t".repeat(tabSize);
+        StringBuilder str = new StringBuilder();
+        for (int i=0; i < tabSize; i++) {
+            str.append("\t");
+        }
+        return str.toString();
     }
 
     public String addEnding(boolean newline, boolean comma) {
